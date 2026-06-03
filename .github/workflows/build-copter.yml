@@ -28,11 +28,11 @@ jobs:
 
       - name: ArduCopterをビルド
         run: |
-          ./waf configure --board Pixhawk6C
+          ./waf configure --board DAKEFPVH743
           ./waf copter
 
       - name: ビルド成果物をアップロード
         uses: actions/upload-artifact@v4
         with:
           name: ArduCopter-firmware
-          path: build/Pixhawk6C/bin/
+          path: build/DAKEFPVH743/bin/
