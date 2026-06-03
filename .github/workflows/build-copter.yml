@@ -1,0 +1,38 @@
+name: Build ArduCopter
+
+on:
+  workflow_dispatch:  # 手動実行ボタンを有効にする
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive  # サブモジュールも取得
+
+      - name: Pythonのセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 依存パッケージのインストール
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi g++ gawk
+
+      - name: Pythonパッケージのインストール
+        run: pip install empy==3.3.4 pexpect
+
+      - name: ArduCopterをビルド
+        run: |
+          ./waf configure --board Pixhawk6C
+          ./waf copter
+
+      - name: ビルド成果物をアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: ArduCopter-firmware
+          path: build/Pixhawk6C/bin/
